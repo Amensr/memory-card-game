@@ -269,5 +269,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // ... ton code de démarrage du jeu ...
         document.getElementById("resetGame").style.display = "inline-block";
     });
+    if (window.location.pathname === '/jeu.html') {
+        const startBtn = document.getElementById("startGame");
+        const resetBtn = document.getElementById("resetGame");
+
+        if (startBtn && resetBtn) {
+            startBtn.addEventListener("click", () => {
+                console.log("Démarrage du jeu...");
+                startBtn.style.display = "none";
+                resetBtn.style.display = "inline-block";
+                createGameBoard(level); // génère la grille
+            });
+
+            resetBtn.addEventListener("click", () => {
+                location.reload(); // recharge toute la page
+            });
+        }
+    }
+
 
 });
