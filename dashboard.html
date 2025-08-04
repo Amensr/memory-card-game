@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Tableau de bord</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
     <header>
         <h1>Tableau de bord</h1>
     </header>
+    <button onclick="window.location.href='jeu.html'" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+  ← Retour au jeu
+</button>
+    <button onclick="window.location.href='index.html'" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+  ← Retour 
+</button>
+
+
     <main>
         <p>Pseudo : <span id="db-pseudo"></span></p>
         <p>Âge : <span id="db-age"></span></p>
@@ -24,4 +34,5 @@
         document.getElementById('db-score').innerText = localStorage.getItem('score') || '0';
     </script>
 </body>
+
 </html>

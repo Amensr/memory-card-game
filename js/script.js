@@ -5,16 +5,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const inviteFriend = document.getElementById('inviteFriend');
     const inviteLinkContainer = document.getElementById('inviteLinkContainer');
     const leaderboard = document.getElementById('leaderboard');
+    const scoreDisplay = document.getElementById('scoreDisplay');
 
     let pseudo = localStorage.getItem('pseudo') || '';
     let level = localStorage.getItem('level') || 'facile';
     let cards = [];
     let flippedCards = [];
     let canPlay = false;
+    let score = parseInt(localStorage.getItem('score') || '0', 10);
 
     if (pseudo) {
         document.getElementById('pseudo').innerText = pseudo;
     }
+
+    if (scoreDisplay) scoreDisplay.innerText = score;
 
     if (pseudoForm) {
         pseudoForm.addEventListener('submit', (e) => {
@@ -81,6 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createGameBoard(level) {
         gameBoard.innerHTML = '';
+
+        // Reset score au début de la partie
+        score = 0;
+        localStorage.setItem('score', score);
+        if (scoreDisplay) scoreDisplay.innerText = score;
+
         const images = getImagesForLevel(level);
         if (level === 'difficile') {
             cards = images.flatMap(image => [
@@ -148,11 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 third.card.flipped = true;
                 flippedCards = [];
                 canPlay = true;
+
+                score += 13; // 13 points pour une triplette trouvée
+                localStorage.setItem('score', score);
+                if (scoreDisplay) scoreDisplay.innerText = score;
+
                 if (cards.every(card => card.flipped)) {
                     alert('Vous avez gagné !');
-                    let score = parseInt(localStorage.getItem('score') || '0', 10);
-                    score += 1;
-                    localStorage.setItem('score', score);
                     saveScore(pseudo, score);
                     window.location.href = 'joueur.html';
                 }
@@ -170,11 +182,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 second.card.flipped = true;
                 flippedCards = [];
                 canPlay = true;
+
+                score += 7; // 2 points par paire trouvée
+                localStorage.setItem('score', score);
+                if (scoreDisplay) scoreDisplay.innerText = score;
+
                 if (cards.every(card => card.flipped)) {
                     alert('Vous avez gagné !');
-                    let score = parseInt(localStorage.getItem('score') || '0', 10);
-                    score += 1;
-                    localStorage.setItem('score', score);
                     saveScore(pseudo, score);
                     window.location.href = 'joueur.html';
                 }

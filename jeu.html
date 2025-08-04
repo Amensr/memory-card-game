@@ -13,6 +13,10 @@
         <h1>Jeu de Mémoire</h1>
         <p>Pseudo : <span id="pseudo"></span></p>
     </header>
+    <button onclick="window.location.href='dashboard.html'" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+  ← Retour au dashboard
+</button>
+
     <main>
         <div id="gameBoard"></div>
         <button id="inviteFriend">Inviter un ami</button>
@@ -23,12 +27,19 @@
             <option value="moyen">Moyen</option>
             <option value="difficile">Difficile</option>
         </select>
-        <button onclick="window.location.href='dashboard.html'" style="float:right;margin:10px;">
+        <p>Score : <span id="scoreDisplay">0</span></p>
+        <div id="rankingContainer" style="display: none; margin-top: 20px;">
+            <h2>Classement</h2>
+            <ul id="rankingList"></ul>
+        </div>
+        <div id="inviteFriendContainer" style="display: none; margin-top: 20px;">
+            <h2>Inviter un ami</h2>
+            <button onclick=" window.location.href='dashboard.html' " style="float:right;margin:10px; ">
             Tableau de bord
         </button>
-        <button onclick="window.location.href='joueur.html'" style="margin-top:20px;">Voir le classement</button>
+            <button onclick="window.location.href='joueur.html' " style="margin-top:20px; ">Voir le classement</button>
     </main>
-    <script src="./js/script.js"></script>
+    <script src="./js/script.js "></script>
 </body>
 
 </html>
