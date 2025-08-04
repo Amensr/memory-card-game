@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inviter un Ami</title>
+    <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>👥 Inviter un Ami</h1>
+    </header>
+
+    <main>
+        <p>Partagez ce lien avec votre ami :</p>
+        <p id="inviteLinkContainer"></p>
+
+        <button id="copyLinkBtn">📋 Copier le Lien</button><br><br>
+        <button id="rejoindreBtn">🎮 Rejoindre la Partie</button><br><br>
+        <a href="index.html"><button id="retourBtn">⬅️ Retour à l’accueil</button></a>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ami = urlParams.get('amis');
+            const inviteLinkContainer = document.getElementById('inviteLinkContainer');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const rejoindreBtn = document.getElementById('rejoindreBtn');
+
+            if (!ami) {
+                inviteLinkContainer.textContent = "Erreur : aucun pseudo fourni dans l’URL.";
+                rejoindreBtn.disabled = true;
+                copyLinkBtn.disabled = true;
+                return;
+            }
+
+            const inviteLink = `https://amensr.github.io/jeu-de-m-moire/inviter.html?amis=${encodeURIComponent(ami)}`;
+
+            inviteLinkContainer.innerHTML = `<a href="${inviteLink}" target="_blank">${inviteLink}</a>`;
+
+            copyLinkBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(inviteLink).then(() => {
+                    alert('✅ Lien copié dans le presse-papiers !');
+                }).catch(err => {
+                    console.error('❌ Erreur lors de la copie :', err);
+                });
+            });
+
+            rejoindreBtn.addEventListener('click', () => {
+                window.location.href = `jeu.html?pseudo=${encodeURIComponent(ami)}`;
+            });
+        });
+    </script>
+</body>
+
+</html>

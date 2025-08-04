@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu de Mémoire</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Bienvenue au Jeu de Mémoire</h1>
+    </header>
+    <main>
+        <form id="pseudoForm">
+            <label for="pseudo">Entrez votre pseudo :</label>
+            <input type="text" id="pseudo" required>
+            <div id="birthBlock">
+                <label for="birthYear">Année de naissance :</label>
+                <input type="number" id="birthYear" min="1900" max="2100" required>
+            </div>
+            <label for="email">Email :</label>
+            <input type="email" id="email" required>
+            <p id="ageDisplay" style="color:#4CAF50;font-weight:bold;"></p>
+            <button type="submit">Jouer</button>
+        </form>
+        <button onclick="window.location.href='joueur.html'" style="margin-top:20px;">Voir le classement</button>
+    </main>
+    <script src="./js/script.js"></script>
+    <script>
+        // Pré-remplir les champs si déjà inscrit
+        const pseudo = localStorage.getItem('pseudo') || '';
+        const email = localStorage.getItem('email') || '';
+        const birthYear = localStorage.getItem('birthYear') || '';
+        document.getElementById('pseudo').value = pseudo;
+        document.getElementById('email').value = email;
+        document.getElementById('birthYear').value = birthYear;
+
+        // Affiche l'âge si année de naissance connue
+        function updateAgeDisplay() {
+            const year = parseInt(document.getElementById('birthYear').value, 10);
+            const now = new Date().getFullYear();
+            const age = (year && year > 1900 && year <= now) ? now - year : '';
+            document.getElementById('ageDisplay').innerText = age ? `Votre âge : ${age} ans` : '';
+        }
+        document.getElementById('birthYear').addEventListener('input', updateAgeDisplay);
+        updateAgeDisplay();
+
+        // Cache le champ année de naissance si déjà inscrit
+        if (pseudo && email && birthYear) {
+            document.getElementById('birthBlock').style.display = 'none';
+            document.getElementById('birthYear').required = false;
+            updateAgeDisplay();
+        }
+    </script>
+</body>
+
+</html>

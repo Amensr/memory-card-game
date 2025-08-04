@@ -1,0 +1,133 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1em 0;
+}
+
+main {
+    padding: 2em;
+    max-width: 1000px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    text-align: left;
+}
+
+main p {
+    font-size: 1.2em;
+    margin: 18px 0;
+    color: #333;
+}
+
+main span {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+#gameBoard {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 16px;
+    width: 100%;
+    margin: 40px auto;
+    min-height: 60vh;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    padding: 32px 0;
+}
+
+.card {
+    width: 100px;
+    height: 100px;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+    position: relative;
+    transform-style: preserve-3d;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card.back {
+    background-color: #ccc;
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+}
+
+.card .front {
+    transform: rotateY(180deg);
+}
+
+.card .back {
+    transform: rotateY(0);
+}
+
+form label {
+    display: block;
+    margin-top: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+form button {
+    margin-top: 24px;
+    padding: 10px 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    width: 100%;
+}
+
+form button:hover {
+    background-color: #388e3c;
+}
+
+button {
+    margin-top: 24px;
+    padding: 10px 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: #388e3c;
+}

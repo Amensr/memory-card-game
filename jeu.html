@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu de Mémoire</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Jeu de Mémoire</h1>
+        <p>Pseudo : <span id="pseudo"></span></p>
+    </header>
+    <main>
+        <div id="gameBoard"></div>
+        <button id="inviteFriend">Inviter un ami</button>
+        <div id="inviteLinkContainer" style="margin-top: 20px;"></div>
+        <label for="difficulty">Difficulté :</label>
+        <select id="difficulty" style="padding: 10px;height: 10%;">
+            <option value="facile">Facile</option>
+            <option value="moyen">Moyen</option>
+            <option value="difficile">Difficile</option>
+        </select>
+        <button onclick="window.location.href='dashboard.html'" style="float:right;margin:10px;">
+            Tableau de bord
+        </button>
+        <button onclick="window.location.href='joueur.html'" style="margin-top:20px;">Voir le classement</button>
+    </main>
+    <script src="./js/script.js"></script>
+</body>
+
+</html>
