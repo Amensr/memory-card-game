@@ -11,7 +11,7 @@
 <body>
     <header>
         <h1>👥 Inviter un Ami</h1>
-    </header>
+    </header><br>
     <button onclick="window.location.href='dashboard.html'" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
   ← Retour au dashboard
 </button>
@@ -40,7 +40,7 @@
                 return;
             }
 
-            const inviteLink = `https://amensr.github.io/jeu-de-m-moire/inviter.html?amis=${encodeURIComponent(ami)}`;
+            const inviteLink = `https://github.com/Amensr/memory-card-game/inviter.html?amis=${encodeURIComponent(ami)}`;
 
             inviteLinkContainer.innerHTML = `<a href="${inviteLink}" target="_blank">${inviteLink}</a>`;
 
