@@ -235,4 +235,39 @@ document.addEventListener('DOMContentLoaded', () => {
             createGameBoard(level);
         });
     }
+    document.addEventListener("DOMContentLoaded", () => {
+        const startBtn = document.getElementById("startGame");
+        const resetBtn = document.getElementById("resetGame");
+
+        startBtn.addEventListener("click", () => {
+            // Démarrer le jeu ici (mets ta logique de démarrage)
+            console.log("Jeu démarré !");
+
+            // Masquer le bouton start, afficher reset
+            startBtn.style.display = "none";
+            resetBtn.style.display = "inline-block";
+
+            // Ici tu peux aussi appeler ta fonction d'initialisation de jeu
+            demarrerJeu(); // À créer si ce n’est pas déjà fait
+        });
+
+        resetBtn.addEventListener("click", () => {
+            console.log("Jeu réinitialisé !");
+
+            // Réinitialiser les variables, la grille, etc.
+            reinitialiserJeu(); // À créer si ce n’est pas déjà fait
+
+            // Réafficher le bouton start si tu veux recommencer
+            startBtn.style.display = "inline-block";
+            resetBtn.style.display = "none";
+        });
+    });
+    document.getElementById("resetGame").addEventListener("click", function() {
+        location.reload(); // Recharge la page
+    });
+    document.getElementById("startGame").addEventListener("click", function() {
+        // ... ton code de démarrage du jeu ...
+        document.getElementById("resetGame").style.display = "inline-block";
+    });
+
 });
