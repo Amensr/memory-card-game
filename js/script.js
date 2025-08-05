@@ -56,13 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Scores actuels:', scores);
     }
 
-    if (window.location.pathname === '/joueurs.html') {
-        const scores = getScores();
-        scores.forEach(score => {
-            const li = document.createElement('li');
-            li.innerText = `${score.pseudo}: ${score.score}`;
-            leaderboard.appendChild(li);
-        });
+    if (window.location.pathname === '/joueur.html') {
+        displayLeaderboard();
     }
 
     function getImagesForLevel(level) {
@@ -183,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 flippedCards = [];
                 canPlay = true;
 
-                score += 7; // 2 points par paire trouvée
+                score += 7; // 7 points par paire trouvée
                 localStorage.setItem('score', score);
                 if (scoreDisplay) scoreDisplay.innerText = score;
 
@@ -203,21 +198,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function displayLeaderboard() {
+        const scores = getScores();
+        leaderboard.innerHTML = ''; // Effacer le contenu existant
+
+        scores.forEach((score, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${index + 1}. ${score.pseudo}: ${score.score} points`;
+            leaderboard.appendChild(listItem);
+        });
+    }
+
     if (window.location.pathname === '/jeu.html') {
         let exitBtn = document.createElement('button');
         exitBtn.textContent = "Sortir";
         exitBtn.style.marginTop = "20px";
         exitBtn.onclick = () => window.location.href = "index.html";
         document.querySelector('main').appendChild(exitBtn);
-    }
-
-    if (window.location.pathname === '/joueurs.html') {
-        const scores = getScores();
-        scores.forEach(score => {
-            const li = document.createElement('li');
-            li.innerText = `${score.pseudo}: ${score.score}`;
-            leaderboard.appendChild(li);
-        });
     }
 
     if (window.location.pathname === '/inviter.html') {
@@ -235,79 +232,4 @@ document.addEventListener('DOMContentLoaded', () => {
             createGameBoard(level);
         });
     }
-    document.addEventListener("DOMContentLoaded", () => {
-        const startBtn = document.getElementById("startGame");
-        const resetBtn = document.getElementById("resetGame");
-
-        startBtn.addEventListener("click", () => {
-            // Démarrer le jeu ici (mets ta logique de démarrage)
-            console.log("Jeu démarré !");
-
-            // Masquer le bouton start, afficher reset
-            startBtn.style.display = "none";
-            resetBtn.style.display = "inline-block";
-
-            // Ici tu peux aussi appeler ta fonction d'initialisation de jeu
-            demarrerJeu(); // À créer si ce n’est pas déjà fait
-        });
-
-        resetBtn.addEventListener("click", () => {
-            console.log("Jeu réinitialisé !");
-
-            // Réinitialiser les variables, la grille, etc.
-            reinitialiserJeu(); // À créer si ce n’est pas déjà fait
-
-            // Réafficher le bouton start si tu veux recommencer
-            startBtn.style.display = "inline-block";
-            resetBtn.style.display = "none";
-        });
-    });
-    document.getElementById("resetGame").addEventListener("click", function() {
-        location.reload(); // Recharge la page
-    });
-    document.getElementById("startGame").addEventListener("click", function() {
-        // ... ton code de démarrage du jeu ...
-        document.getElementById("resetGame").style.display = "inline-block";
-    });
-    if (window.location.pathname === '/jeu.html') {
-        const startBtn = document.getElementById("startGame");
-        const resetBtn = document.getElementById("resetGame");
-
-        if (startBtn && resetBtn) {
-            startBtn.addEventListener("click", () => {
-                console.log("Démarrage du jeu...");
-                startBtn.style.display = "none";
-                resetBtn.style.display = "inline-block";
-                createGameBoard(level); // génère la grille
-            });
-
-            resetBtn.addEventListener("click", () => {
-                location.reload(); // recharge toute la page
-            });
-        }
-    }
-    // Exemple de données des joueurs (à remplacer par vos données réelles)
-    const players = [
-        { name: 'Joueur 1', score: 150 },
-        { name: 'Joueur 2', score: 120 },
-        { name: 'Joueur 3', score: 180 },
-        // Ajoutez d'autres joueurs ici
-    ];
-
-    // Fonction pour afficher le classement des joueurs
-    function displayLeaderboard(players) {
-        const leaderboard = document.getElementById('leaderboard');
-        leaderboard.innerHTML = ''; // Effacer le contenu existant
-
-        players.forEach((player, index) => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${index + 1}. ${player.name} - ${player.score} points`;
-            leaderboard.appendChild(listItem);
-        });
-    }
-
-    // Appeler la fonction pour afficher le classement
-    displayLeaderboard(players);
-
-
 });
