@@ -286,6 +286,28 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+    // Exemple de données des joueurs (à remplacer par vos données réelles)
+    const players = [
+        { name: 'Joueur 1', score: 150 },
+        { name: 'Joueur 2', score: 120 },
+        { name: 'Joueur 3', score: 180 },
+        // Ajoutez d'autres joueurs ici
+    ];
+
+    // Fonction pour afficher le classement des joueurs
+    function displayLeaderboard(players) {
+        const leaderboard = document.getElementById('leaderboard');
+        leaderboard.innerHTML = ''; // Effacer le contenu existant
+
+        players.forEach((player, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${index + 1}. ${player.name} - ${player.score} points`;
+            leaderboard.appendChild(listItem);
+        });
+    }
+
+    // Appeler la fonction pour afficher le classement
+    displayLeaderboard(players);
 
 
 });
