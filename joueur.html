@@ -6,20 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classement des Joueurs</title>
     <link rel="stylesheet" href="./css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        
+        header {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        main {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <h1>Classement des Joueurs</h1>
-    </header><br>
-    <button onclick="window.location.href='dashboard.html'" style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
-  ← Retour au dashboard
-</button>
-
+    </header>
+    <button onclick="window.location.href='dashboard.html'">Retour au Dashboard</button>
     <main>
         <ul id="leaderboard"></ul>
     </main>
     <script src="./js/script.js"></script>
+    <script>
+        // Appel de la fonction displayLeaderboard lorsque la page est chargée
+        document.addEventListener('DOMContentLoaded', function() {
+            displayLeaderboard();
+        });
+    </script>
 </body>
 
 </html>

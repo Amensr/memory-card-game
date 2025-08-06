@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const inviteLinkContainer = document.getElementById('inviteLinkContainer');
     const leaderboard = document.getElementById('leaderboard');
     const scoreDisplay = document.getElementById('scoreDisplay');
-
     let pseudo = localStorage.getItem('pseudo') || '';
     let level = localStorage.getItem('level') || 'facile';
     let cards = [];
@@ -14,12 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let canPlay = false;
     let score = parseInt(localStorage.getItem('score') || '0', 10);
 
+    // Affichage du pseudo et du score au chargement de la page
     if (pseudo) {
         document.getElementById('pseudo').innerText = pseudo;
     }
-
     if (scoreDisplay) scoreDisplay.innerText = score;
 
+    // Gestion de la soumission du formulaire de pseudo
     if (pseudoForm) {
         pseudoForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -35,31 +35,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Gestion de l'invitation d'un ami
     inviteFriend.addEventListener('click', () => {
         const inviteUrl = `inviter.html?amis=${encodeURIComponent(pseudo)}`;
         inviteLinkContainer.innerHTML = `<a href="${inviteUrl}" target="_blank">Partagez ce lien avec votre ami : ${inviteUrl}</a>`;
     });
 
+    // Fonction pour sauvegarder le score
     function saveScore(pseudo, score) {
         const scores = JSON.parse(localStorage.getItem('scores')) || [];
         scores.push({ pseudo, score });
+        // Trier les scores par ordre décroissant
+        scores.sort((a, b) => b.score - a.score);
         localStorage.setItem('scores', JSON.stringify(scores));
+        console.log('Score sauvegardé:', { pseudo, score });
     }
 
+    // Fonction pour récupérer les scores
     function getScores() {
         return JSON.parse(localStorage.getItem('scores')) || [];
     }
 
+    // Initialisation du tableau de jeu et affichage des scores actuels
     if (window.location.pathname === '/jeu.html') {
         createGameBoard(level);
         const scores = getScores();
         console.log('Scores actuels:', scores);
     }
 
+    // Affichage du classement des joueurs
     if (window.location.pathname === '/joueur.html') {
         displayLeaderboard();
     }
 
+    // Fonction pour obtenir les images en fonction du niveau
     function getImagesForLevel(level) {
         let count = 0;
         let folder = '';
@@ -78,15 +87,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return images;
     }
 
+    // Fonction pour créer le tableau de jeu
     function createGameBoard(level) {
         gameBoard.innerHTML = '';
-
-        // Reset score au début de la partie
+        // Réinitialisation du score au début de la partie
         score = 0;
         localStorage.setItem('score', score);
         if (scoreDisplay) scoreDisplay.innerText = score;
-
         const images = getImagesForLevel(level);
+
         if (level === 'difficile') {
             cards = images.flatMap(image => [
                 { src: image, flipped: false },
@@ -99,15 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 { src: image, flipped: false }
             ]);
         }
-        cards.sort(() => Math.random() - 0.5);
 
+        cards.sort(() => Math.random() - 0.5);
         flippedCards = [];
         canPlay = false;
 
         cards.forEach(card => {
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
-            cardElement.classList.add('flipped'); // face visible au départ
+            cardElement.classList.add('flipped'); // Face visible au départ
             cardElement.innerHTML = `<img src="${card.src}" alt="Card" class="front">`;
             card.element = cardElement;
             gameBoard.appendChild(cardElement);
@@ -128,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, displayTime);
     }
 
+    // Fonction pour retourner une carte
     function flipCard(cardElement, card) {
         const maxFlips = (level === 'difficile') ? 3 : 2;
         if (!canPlay) return;
@@ -144,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Fonction pour vérifier si les cartes retournées correspondent
     function checkForMatch() {
         if (level === 'difficile') {
             const [first, second, third] = flippedCards;
@@ -153,11 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 third.card.flipped = true;
                 flippedCards = [];
                 canPlay = true;
-
                 score += 13; // 13 points pour une triplette trouvée
                 localStorage.setItem('score', score);
                 if (scoreDisplay) scoreDisplay.innerText = score;
-
                 if (cards.every(card => card.flipped)) {
                     alert('Vous avez gagné !');
                     saveScore(pseudo, score);
@@ -177,11 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 second.card.flipped = true;
                 flippedCards = [];
                 canPlay = true;
-
                 score += 7; // 7 points par paire trouvée
                 localStorage.setItem('score', score);
                 if (scoreDisplay) scoreDisplay.innerText = score;
-
                 if (cards.every(card => card.flipped)) {
                     alert('Vous avez gagné !');
                     saveScore(pseudo, score);
@@ -198,10 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Fonction pour afficher le classement
     function displayLeaderboard() {
         const scores = getScores();
         leaderboard.innerHTML = ''; // Effacer le contenu existant
-
         scores.forEach((score, index) => {
             const listItem = document.createElement('li');
             listItem.textContent = `${index + 1}. ${score.pseudo}: ${score.score} points`;
@@ -209,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Ajout d'un bouton pour sortir du jeu
     if (window.location.pathname === '/jeu.html') {
         let exitBtn = document.createElement('button');
         exitBtn.textContent = "Sortir";
@@ -217,12 +225,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('main').appendChild(exitBtn);
     }
 
+    // Gestion de l'invitation d'un ami
     if (window.location.pathname === '/inviter.html') {
         const urlParams = new URLSearchParams(window.location.search);
         const ami = urlParams.get('amis');
         inviteLink.innerText = `Invitation de ${ami}`;
     }
 
+    // Gestion du changement de niveau de difficulté
     const difficultySelect = document.getElementById('difficulty');
     if (difficultySelect) {
         difficultySelect.value = level;
