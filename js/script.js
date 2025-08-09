@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inviteLinkContainer = document.getElementById('inviteLinkContainer');
     const leaderboard = document.getElementById('leaderboard');
     const scoreDisplay = document.getElementById('scoreDisplay');
+    const totalScoreDisplay = document.getElementById('totalScoreDisplay'); // ➕ Affichage score cumulé
     let pseudo = localStorage.getItem('pseudo') || '';
     let level = localStorage.getItem('level') || 'facile';
     let cards = [];
@@ -13,13 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let canPlay = false;
     let score = parseInt(localStorage.getItem('score') || '0', 10);
 
-    // Affichage du pseudo et du score au chargement de la page
+    // Affichage du pseudo et du score au chargement
     if (pseudo) {
         document.getElementById('pseudo').innerText = pseudo;
     }
     if (scoreDisplay) scoreDisplay.innerText = score;
 
-    // Gestion de la soumission du formulaire de pseudo
+    // Gestion pseudo form
     if (pseudoForm) {
         pseudoForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -35,40 +36,61 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Gestion de l'invitation d'un ami
-    inviteFriend.addEventListener('click', () => {
+    // Invitation d'ami
+    inviteFriend ? .addEventListener('click', () => {
         const inviteUrl = `inviter.html?amis=${encodeURIComponent(pseudo)}`;
         inviteLinkContainer.innerHTML = `<a href="${inviteUrl}" target="_blank">Partagez ce lien avec votre ami : ${inviteUrl}</a>`;
     });
 
-    // Fonction pour sauvegarder le score
+    // Sauvegarde du score avec historique
     function saveScore(pseudo, score) {
         const scores = JSON.parse(localStorage.getItem('scores')) || [];
-        scores.push({ pseudo, score });
-        // Trier les scores par ordre décroissant
-        scores.sort((a, b) => b.score - a.score);
+        scores.push({ pseudo, score, date: new Date().toLocaleString() });
         localStorage.setItem('scores', JSON.stringify(scores));
         console.log('Score sauvegardé:', { pseudo, score });
     }
 
-    // Fonction pour récupérer les scores
+    // Récupération des scores
     function getScores() {
         return JSON.parse(localStorage.getItem('scores')) || [];
     }
 
-    // Initialisation du tableau de jeu et affichage des scores actuels
-    if (window.location.pathname === '/jeu.html') {
+    // Calcul du score total d'un joueur
+    function getTotalScore(pseudo) {
+        return getScores()
+            .filter(entry => entry.pseudo === pseudo)
+            .reduce((sum, entry) => sum + entry.score, 0);
+    }
+
+    // Initialisation jeu
+    if (window.location.pathname.endsWith('jeu.html')) {
         createGameBoard(level);
-        const scores = getScores();
-        console.log('Scores actuels:', scores);
+        console.log('Scores actuels:', getScores());
     }
 
-    // Affichage du classement des joueurs
-    if (window.location.pathname === '/joueur.html') {
+    // Affichage leaderboard et scores cumulés
+    if (window.location.pathname.includes('joueur.html')) {
         displayLeaderboard();
+        if (totalScoreDisplay) {
+            totalScoreDisplay.innerText = `Score cumulé : ${getTotalScore(pseudo)}`;
+        }
     }
 
-    // Fonction pour obtenir les images en fonction du niveau
+    function displayLeaderboard() {
+        const scores = getScores();
+        leaderboard.innerHTML = '';
+        if (scores.length === 0) {
+            leaderboard.innerHTML = '<li>Aucun score enregistré</li>';
+            return;
+        }
+        scores.forEach((entry, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${index + 1}. ${entry.pseudo}: ${entry.score} points (${entry.date})`;
+            leaderboard.appendChild(listItem);
+        });
+    }
+
+    // Gestion images selon niveau
     function getImagesForLevel(level) {
         let count = 0;
         let folder = '';
@@ -82,32 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
             count = 18;
             folder = 'difficile';
         }
-        const images = Array.from({ length: count }, (_, i) => `images/${folder}/image${i + 1}.png`);
-        console.log('Images pour le niveau', level, images);
-        return images;
+        return Array.from({ length: count }, (_, i) => `images/${folder}/image${i + 1}.png`);
     }
 
-    // Fonction pour créer le tableau de jeu
+    // Création du board
     function createGameBoard(level) {
         gameBoard.innerHTML = '';
-        // Réinitialisation du score au début de la partie
         score = 0;
         localStorage.setItem('score', score);
         if (scoreDisplay) scoreDisplay.innerText = score;
         const images = getImagesForLevel(level);
 
-        if (level === 'difficile') {
-            cards = images.flatMap(image => [
-                { src: image, flipped: false },
-                { src: image, flipped: false },
-                { src: image, flipped: false }
-            ]);
-        } else {
-            cards = images.flatMap(image => [
-                { src: image, flipped: false },
-                { src: image, flipped: false }
-            ]);
-        }
+        cards = (level === 'difficile') ?
+            images.flatMap(image => [{ src: image, flipped: false }, { src: image, flipped: false }, { src: image, flipped: false }]) :
+            images.flatMap(image => [{ src: image, flipped: false }, { src: image, flipped: false }]);
 
         cards.sort(() => Math.random() - 0.5);
         flippedCards = [];
@@ -115,8 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cards.forEach(card => {
             const cardElement = document.createElement('div');
-            cardElement.classList.add('card');
-            cardElement.classList.add('flipped'); // Face visible au départ
+            cardElement.classList.add('card', 'flipped');
             cardElement.innerHTML = `<img src="${card.src}" alt="Card" class="front">`;
             card.element = cardElement;
             gameBoard.appendChild(cardElement);
@@ -127,24 +136,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const delayMap = { facile: 5000, moyen: 7000, difficile: 10000 };
-        const displayTime = delayMap[level] || 5000;
-
         setTimeout(() => {
-            cards.forEach(card => {
-                card.element.classList.remove('flipped');
-            });
+            cards.forEach(card => card.element.classList.remove('flipped'));
             canPlay = true;
-        }, displayTime);
+        }, delayMap[level] || 5000);
     }
 
-    // Fonction pour retourner une carte
+    // Retourner carte
     function flipCard(cardElement, card) {
         const maxFlips = (level === 'difficile') ? 3 : 2;
-        if (!canPlay) return;
-        if (flippedCards.length >= maxFlips) return;
-        if (card.flipped) return;
-        if (cardElement.classList.contains('flipped')) return;
-
+        if (!canPlay || flippedCards.length >= maxFlips || card.flipped || cardElement.classList.contains('flipped')) return;
         cardElement.classList.add('flipped');
         flippedCards.push({ element: cardElement, card });
 
@@ -154,46 +155,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Fonction pour vérifier si les cartes retournées correspondent
+    // Vérification match
     function checkForMatch() {
         if (level === 'difficile') {
             const [first, second, third] = flippedCards;
             if (first.card.src === second.card.src && second.card.src === third.card.src) {
-                first.card.flipped = true;
-                second.card.flipped = true;
-                third.card.flipped = true;
+                first.card.flipped = second.card.flipped = third.card.flipped = true;
                 flippedCards = [];
                 canPlay = true;
-                score += 13; // 13 points pour une triplette trouvée
-                localStorage.setItem('score', score);
-                if (scoreDisplay) scoreDisplay.innerText = score;
-                if (cards.every(card => card.flipped)) {
-                    alert('Vous avez gagné !');
-                    saveScore(pseudo, score);
-                    window.location.href = 'joueur.html';
-                }
+                score += 13;
             } else {
                 setTimeout(() => {
                     flippedCards.forEach(({ element }) => element.classList.remove('flipped'));
                     flippedCards = [];
                     canPlay = true;
                 }, 1000);
+                return;
             }
         } else {
             const [first, second] = flippedCards;
             if (first.card.src === second.card.src) {
-                first.card.flipped = true;
-                second.card.flipped = true;
+                first.card.flipped = second.card.flipped = true;
                 flippedCards = [];
                 canPlay = true;
-                score += 7; // 7 points par paire trouvée
-                localStorage.setItem('score', score);
-                if (scoreDisplay) scoreDisplay.innerText = score;
-                if (cards.every(card => card.flipped)) {
-                    alert('Vous avez gagné !');
-                    saveScore(pseudo, score);
-                    window.location.href = 'joueur.html';
-                }
+                score += 7;
             } else {
                 setTimeout(() => {
                     first.element.classList.remove('flipped');
@@ -201,23 +186,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     flippedCards = [];
                     canPlay = true;
                 }, 1000);
+                return;
             }
+        }
+        localStorage.setItem('score', score);
+        if (scoreDisplay) scoreDisplay.innerText = score;
+        if (cards.every(card => card.flipped)) {
+            alert('Vous avez gagné !');
+            saveScore(pseudo, score);
+            window.location.href = 'joueur.html';
         }
     }
 
-    // Fonction pour afficher le classement
-    function displayLeaderboard() {
-        const scores = getScores();
-        leaderboard.innerHTML = ''; // Effacer le contenu existant
-        scores.forEach((score, index) => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${index + 1}. ${score.pseudo}: ${score.score} points`;
-            leaderboard.appendChild(listItem);
-        });
-    }
-
-    // Ajout d'un bouton pour sortir du jeu
-    if (window.location.pathname === '/jeu.html') {
+    // Bouton sortie
+    if (window.location.pathname.endsWith('jeu.html')) {
         let exitBtn = document.createElement('button');
         exitBtn.textContent = "Sortir";
         exitBtn.style.marginTop = "20px";
@@ -225,14 +207,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('main').appendChild(exitBtn);
     }
 
-    // Gestion de l'invitation d'un ami
-    if (window.location.pathname === '/inviter.html') {
+    // Invitation page
+    if (window.location.pathname.endsWith('inviter.html')) {
         const urlParams = new URLSearchParams(window.location.search);
         const ami = urlParams.get('amis');
         inviteLink.innerText = `Invitation de ${ami}`;
     }
 
-    // Gestion du changement de niveau de difficulté
+    // Changement de niveau
     const difficultySelect = document.getElementById('difficulty');
     if (difficultySelect) {
         difficultySelect.value = level;
